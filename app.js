@@ -1,8 +1,8 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const _ = require("lodash"); // Import Lodash
+import express from "express";
+import fetch from "node-fetch";
+import _ from "lodash"; 
 const app = express();
-const port = 3000; // You can choose any port you like
+const port = 3000; 
 
 // Create a function to fetch and analyze blog stats
 const fetchAndAnalyzeBlogStats = async () => {
@@ -10,7 +10,7 @@ const fetchAndAnalyzeBlogStats = async () => {
     // Use node-fetch to make the GET request to the external API
     const response = await fetch(
       "https://intent-kit-16.hasura.app/api/rest/blogs"
-    ); // Replace with the actual API URL
+    ); 
 
     if (!response.ok) {
       throw new Error("Failed to fetch data from the API");
@@ -41,8 +41,9 @@ const fetchAndAnalyzeBlogStats = async () => {
 };
 
 // Create a memoized version of the fetchAndAnalyzeBlogStats function
-const memoizedFetchAndAnalyzeBlogStats = _.memoize(fetchAndAnalyzeBlogStats, {
-  maxAge: 3600000, // Cache results for 1 hour (adjust as needed)
+// const memoizedFetchAndAnalyzeBlogStats = _.memoize(fetchAndAnalyzeBlogStats, {
+const memoizedFunction = _.memoize((param) => {
+  maxAge: 3600000
 });
 
 // Create a route to fetch blog stats with caching
@@ -62,7 +63,7 @@ app.get("/api/blog-stats", async (req, res) => {
 // Create a route for blog search
 app.get("/api/blog-search", async (req, res) => {
   try {
-    const query = req.query.query; // Get the query parameter from the request URL
+    const query = req.query.query; 
 
     if (!query) {
       return res.status(400).json({ error: "Missing query parameter" });
@@ -71,7 +72,7 @@ app.get("/api/blog-search", async (req, res) => {
     // Use node-fetch to make the GET request to the external API
     const response = await fetch(
       "https://intent-kit-16.hasura.app/api/rest/blogs"
-    ); // Replace with the actual API URL
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch data from the API");
@@ -99,7 +100,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal server error" });
 });
 
-// Start the server
+
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
