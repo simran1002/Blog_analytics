@@ -4,6 +4,9 @@ import _ from "lodash";
 const app = express();
 const port = 3000; 
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Create a function to fetch and analyze blog stats
 const fetchAndAnalyzeBlogStats = async () => {
   try {
@@ -50,7 +53,7 @@ const memoizedFunction = _.memoize((param) => {
 app.get("/api/blog-stats", async (req, res) => {
   try {
     // Use the memoized function to fetch and analyze blog stats
-    const analyticsResults = await memoizedFetchAndAnalyzeBlogStats();
+    const analyticsResults = await memoizedFunction();
 
     // Send the cached or freshly computed analytics results as a JSON response
     res.json(analyticsResults);
