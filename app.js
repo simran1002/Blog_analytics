@@ -2,24 +2,28 @@ import express from "express";
 import fetch from "node-fetch";
 import _ from "lodash"; 
 const app = express();
-const port = 3000; 
+const port = 8000; 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create a function to fetch and analyze blog stats
-const fetchAndAnalyzeBlogStats = async () => {
+// Middleware to fetch and analyze blog stats
+app.get("/api/blog-stats", async (req, res) => {
   try {
-    // Use node-fetch to make the GET request to the external API
+    // Use fetch to get blog data from the third-party API
     const response = await fetch(
-      "https://intent-kit-16.hasura.app/api/rest/blogs"
-    ); 
+      "https://intent-kit-16.hasura.app/api/rest/blogs",
+      {
+        headers: {
+          'x-hasura-admin-secret': '32qR4KmXOIpsGPQKMqEJHGJS27G5s7HdSKO3gdtQd2kv5e852SiYwWNfxkZOBuQ6'
+        }
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch data from the API");
     }
 
-    // Parse the response JSON
     const data = await response.json();
 
     // Perform data analysis using Lodash
@@ -30,32 +34,14 @@ const fetchAndAnalyzeBlogStats = async () => {
     );
     const uniqueBlogTitles = _.uniqBy(data, "title");
 
-    // Prepare and return the analytics results
-    return {
+    // Prepare and return the analytics results as JSON response
+    const analyticsResults = {
       totalBlogs,
       longestBlogTitle: longestTitleBlog.title,
       blogsWithPrivacyTitle: privacyWordCount.length,
       uniqueBlogTitles: uniqueBlogTitles.map((blog) => blog.title),
     };
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal server error");
-  }
-};
 
-// Create a memoized version of the fetchAndAnalyzeBlogStats function
-// const memoizedFetchAndAnalyzeBlogStats = _.memoize(fetchAndAnalyzeBlogStats, {
-const memoizedFunction = _.memoize((param) => {
-  maxAge: 3600000
-});
-
-// Create a route to fetch blog stats with caching
-app.get("/api/blog-stats", async (req, res) => {
-  try {
-    // Use the memoized function to fetch and analyze blog stats
-    const analyticsResults = await memoizedFunction();
-
-    // Send the cached or freshly computed analytics results as a JSON response
     res.json(analyticsResults);
   } catch (error) {
     console.error(error);
