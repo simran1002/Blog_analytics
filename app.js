@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import axios from "axios";
 import _ from "lodash";
 const app = express();
-const port = 8000;
+const port = 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,7 +21,7 @@ app.get("/api/blog-stats", async (req, res) => {
       .then(async (response) => {
         if (response.status === 200) {
           console.log("Website Content:");
-          // console.log(response.data);
+          console.log(response.data);
 
           // Data processing should be done here
           const data = response.data; // Access JSON data directly
