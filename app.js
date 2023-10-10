@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import axios from "axios";
 import _ from "lodash";
 const app = express();
-const port = 5000;
+const port = 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
